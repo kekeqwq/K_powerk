@@ -1,11 +1,16 @@
+#include <stdlib.h>
 #include <gtk/gtk.h>
 
-static void
-print_hello (GtkWidget *widget,
-             gpointer   data)
+static void exec_foot(void)
 {
-  g_print ("Hello World\n");
+  system("foot & pkill k_powerk");
 }
+
+static void keyboard_show(void)
+{
+  system("pkill k_powerk & sleep 1 ; busctl call --user sm.puri.OSK0 /sm/puri/OSK0 sm.puri.OSK0 SetVisible b true");
+}
+
 
 static void
 activate (GtkApplication *app,
@@ -17,7 +22,7 @@ activate (GtkApplication *app,
 
   /* create a new window, and set its title */
   window = gtk_application_window_new (app);
-  gtk_window_set_title (GTK_WINDOW (window), "Window");
+  gtk_window_set_title (GTK_WINDOW (window), "K Powerkey Tools");
 
   /* Here we construct the container that is going pack our buttons */
   grid = gtk_grid_new ();
@@ -25,16 +30,16 @@ activate (GtkApplication *app,
   /* Pack the container in the window */
   gtk_window_set_child (GTK_WINDOW (window), grid);
 
-  button = gtk_button_new_with_label ("Button 1");
-  g_signal_connect (button, "clicked", G_CALLBACK (print_hello), NULL);
+  button = gtk_button_new_with_label ("Foot");
+  g_signal_connect (button, "clicked", G_CALLBACK (exec_foot), NULL);
 
   /* Place the first button in the grid cell (0, 0), and make it fill
    * just 1 cell horizontally and vertically (ie no spanning)
    */
   gtk_grid_attach (GTK_GRID (grid), button, 0, 0, 1, 1);
 
-  button = gtk_button_new_with_label ("Button 2");
-  g_signal_connect (button, "clicked", G_CALLBACK (print_hello), NULL);
+  button = gtk_button_new_with_label ("Keyboard");
+  g_signal_connect (button, "clicked", G_CALLBACK (keyboard_show), NULL);
 
   /* Place the second button in the grid cell (1, 0), and make it fill
    * just 1 cell horizontally and vertically (ie no spanning)
@@ -60,7 +65,7 @@ main (int    argc,
   GtkApplication *app;
   int status;
 
-  app = gtk_application_new ("org.gtk.example", G_APPLICATION_DEFAULT_FLAGS);
+  app = gtk_application_new ("org.gtk.kpowerk", G_APPLICATION_DEFAULT_FLAGS);
   g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
   status = g_application_run (G_APPLICATION (app), argc, argv);
   g_object_unref (app);
